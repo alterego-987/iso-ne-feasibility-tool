@@ -1,14 +1,8 @@
 # %%
 import shutil
-from urllib import response
 import numpy as np
 import openpyxl as yxl
 import re
-from csv import excel
-from dis import dis
-from fileinput import close
-import os
-from turtle import st
 import pandas as pd
 
 bostonZone = [1000, 1002, 1004, 1010, 1012, 1013, 1014, 1120, 1130]
@@ -28,7 +22,7 @@ def excelExtract(file,sheet):
 
     dispatch = pd.DataFrame(excelContent.iloc[startingIndex_Dispatch+1:,:])
     dispatch.columns = columns=excelContent.iloc[startingIndex_Dispatch,:]
-    dispatch.reset_index(drop=True)
+    dispatch = dispatch.reset_index(drop=True)
     return flows, dispatch
 
 # #function to calculate the dependent parameters after changing the values in the 'Pnew' column
@@ -260,7 +254,7 @@ def writeExcel(file, inputParameters):
                                 for rows in range(r,len(dfDispatch)+r):
                                     ws1.cell(row=rows, column=cols+1).value = dfDispatch.iloc[rows-r,cols]
                     wb1.save(outputFile_intermediate)
-                    wb1.close
+                    wb1.close()
 
                 #print(loading)
                 #print(redispatchResults[1]['Bus Name    '])
@@ -276,7 +270,7 @@ def writeExcel(file, inputParameters):
                             for rows in range(r,len(dfDispatch)+r):
                                 sheet.cell(row=rows, column=cols+1).value = dfDispatch.iloc[rows-r,cols]
                 wb.save(outputFile)
-                wb.close
+                wb.close()
                 break
 
 
@@ -285,12 +279,12 @@ if __name__=='__main__':
     # profiler = cProfile.Profile()
     # profiler.enable()
 
-    file = 'Charging N-1 - Copy.xlsx' #input('Enter File Name with extension i.e., N-1_Trial.xlsx: \n')
+    file = input('Enter File Name with extension i.e., N-1_Trial.xlsx: \n')
+    busNo = int(input('Enter Bus Number for redispatch: \n'))
+    projectSizeMain = int(input('Enter the project size: \n'))
+    charging = input('Is project charging? (Y/N): \n')
 
-    busNo = 999312 #int(input('Enter Bus Number for redispatch: \n'))
-    projectSizeMain = 100 #float(input('Enter the project size: \n'))
-
-    ips = (busNo, projectSizeMain, 'Y')
+    ips = (busNo, projectSizeMain, charging)
     writeExcel(file,ips)
     print('redispatch_' +file+' created!')
     # profiler.disable()

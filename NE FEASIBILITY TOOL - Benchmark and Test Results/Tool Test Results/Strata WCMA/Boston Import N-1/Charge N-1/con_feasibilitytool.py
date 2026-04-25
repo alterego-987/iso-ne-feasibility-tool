@@ -1,9 +1,6 @@
-from cProfile import label
-import ctypes
 import sys
-from turtle import goto
 from PyQt5 import uic, QtWidgets
-from ISO_NE_Flow_Tool_v7_0 import *
+from ISO_NE_Flow_Tool_v6_0 import *
 
 class appScreen(QtWidgets.QMainWindow):
     def __init__(self):
@@ -21,8 +18,11 @@ class appScreen(QtWidgets.QMainWindow):
         projSize = int(self.projSizeInput.text())
         if self.discharge.isChecked():
             charging = 'N'
-        if self.charge.isChecked():
+        elif self.charge.isChecked():
             charging = 'Y'
+        else:
+            self.outMessage.setText('Please select Charging or Discharging.')
+            return
 
         file = self.listFiles.item(0).text()
         inputParameters = (busNumber,projSize,charging)

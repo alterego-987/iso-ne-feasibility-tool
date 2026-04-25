@@ -4,3 +4,9 @@ __pycache__/
 .DS_Store
 *.zip
 *.7z
+
+# Client data - confidential
+*.xlsx
+*Project Details.txt
+*POI Details.txt
+Acadia SWCT.txt

@@ -47,7 +47,7 @@
       <string notr="true">color: rgb(214, 0, 0);</string>
      </property>
      <property name="text">
-      <string>Feasebility Study Tool</string>
+      <string>Feasibility Study Tool</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
