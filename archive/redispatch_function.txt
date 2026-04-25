@@ -1,0 +1,198 @@
+def conduct_redispatch(iteration,option = 1):
+
+    df_FIC= pd.read_csv(fic_iter_path+'FIC_'+str(iteration)+'.csv')
+    df_ContF= pd.read_csv(fic_iter_path+'ContF_'+str(iteration)+'.csv')
+    
+#     df_FIC = pd.read_csv(report_path, sep=",",skiprows=1)
+#     df_ContF = pd.read_csv(contf_path, sep=",",skiprows=9)
+    
+    
+    if df_ContF.columns[1]!= 'Ind':
+    
+        with open(fic_iter_path+'ContF_'+str(iter)+'.csv','r') as f11:
+            tlines = [tline.rstrip() for tline in f11]
+    
+        cols = tlines[0].split(',')
+
+        for y in range(len(cols)):
+    
+#         print(y)
+#         print(cols[y])
+            if cols[y] == 'Ind':
+        
+                break
+    
+        t = cols[y:]
+        t.extend(['NA' for i in range(y)])
+        df_ContF.columns = t
+    
+    
+    
+    print("Option Chosen is:",option)
+    try:
+        preproj_load = float(df_ContF['Cont MW Flow'].values[0])
+    
+    except:
+        
+        try:
+            preproj_load = float(df_ContF['Base MW Flow'].values[0])
+    
+        except:
+            preproj_load = float(df_ContF['Base MW Flow'].values[0].split(' ')[4])
+    
+            
+    preproj_loadp = float(df_ContF['Final DC %Loading'].values[0])
+    
+#     df_FIC
+    
+    df_FIC.loc[df_FIC['  Bus#']==project_bus,'Pgen or Pload'] = project_size
+    flow_change = project_size*df_FIC[' Dfax'][df_FIC['  Bus#']==project_bus].values[0]
+    
+    print('Flow change after adding project: ',flow_change)
+    
+    df_FIC[' Dfax'] = pd.to_numeric(df_FIC[' Dfax'])
+    
+    
+    redispatch = 0
+    
+    if option == 1:
+        
+        df_FIC_sorted = df_FIC.sort_values(by=[' Dfax'],ascending = True)
+    
+    if option == 2:
+        
+        postproj_load = preproj_load + flow_change
+        postproj_loadp = postproj_load/(preproj_load/preproj_loadp)  
+    
+    
+        print(return_str[iteration-1])
+        print("Reference Load = " +str(preproj_load)+" ; Reference load % = "+ str(preproj_loadp))
+        print("Study Load = " +str(postproj_load)+" ; Study load % = "+ str(postproj_loadp))
+    
+        return preproj_load,preproj_loadp,postproj_load,postproj_loadp
+        
+    if option == 3:
+        
+        print("Option = ",option)
+        df_FIC = df_FIC[(df_FIC[' Dfax']<0.03) & (df_FIC[' Dfax']>0)]
+        pgen_tot = df_FIC['Pgen or Pload'].sum()
+        
+        print("Pgen Total = ",pgen_tot)
+        
+        reduction = (1 - (pgen_tot - project_size)/pgen_tot)
+        
+        if pgen_tot < project_size:
+            reduction = 1
+        
+        if pgen_tot == 0:
+            reduction = 0
+        
+        print("Reduction = ",reduction)
+        
+        df_FIC['New pgen'] = df_FIC['Pgen or Pload'] - reduction*df_FIC['Pgen or Pload']
+        
+        print("New Pgen Sum = ",df_FIC['New pgen'].sum())
+        
+        
+        df_FIC['Flow Change'] = (df_FIC['New pgen'] - df_FIC['Pgen or Pload'])*df_FIC[' Dfax']
+        
+        flow_change = flow_change + df_FIC['Flow Change'].sum()
+        
+        print("Flow change =",flow_change)
+        
+        postproj_load = preproj_load + flow_change
+        postproj_loadp = postproj_load/(preproj_load/preproj_loadp)  
+    
+    
+        print(return_str[iteration-1])
+        print("Reference Load = " +str(preproj_load)+" ; Reference load % = "+ str(preproj_loadp))
+        print("Study Load = " +str(postproj_load)+" ; Study load % = "+ str(postproj_loadp))
+    
+        return preproj_load,preproj_loadp,postproj_load,postproj_loadp
+        
+    
+    if option == 4:
+        
+        print("Option = ",option)
+        df_FIC = df_FIC[(df_FIC[' Dfax']<0.03)]
+        pgen_tot = df_FIC['Pgen or Pload'].sum()
+        
+        print("Pgen Total = ",pgen_tot)
+        
+        reduction = (1 - (pgen_tot - project_size)/pgen_tot)
+        
+        if pgen_tot < project_size:
+            reduction = 1
+        
+        if pgen_tot == 0:
+            reduction = 0
+        
+        print("Reduction = ",reduction)
+        
+        df_FIC['New pgen'] = df_FIC['Pgen or Pload'] - reduction*df_FIC['Pgen or Pload']
+        
+        print("New Pgen Sum = ",df_FIC['New pgen'].sum())
+        
+        
+        df_FIC['Flow Change'] = (df_FIC['New pgen'] - df_FIC['Pgen or Pload'])*df_FIC[' Dfax']
+        
+        flow_change = flow_change + df_FIC['Flow Change'].sum()
+        
+        print("Flow change =",flow_change)
+        
+        postproj_load = preproj_load + flow_change
+        postproj_loadp = postproj_load/(preproj_load/preproj_loadp)  
+    
+    
+        print(return_str[iteration-1])
+        print("Reference Load = " +str(preproj_load)+" ; Reference load % = "+ str(preproj_loadp))
+        print("Study Load = " +str(postproj_load)+" ; Study load % = "+ str(postproj_loadp))
+    
+        return preproj_load,preproj_loadp,postproj_load,postproj_loadp
+        
+    
+    for i in range(len(df_FIC_sorted)):
+    
+        if df_FIC_sorted[' Dfax'].iloc[i] >= 0.03:
+            continue
+        
+        if df_FIC_sorted[' Dfax'].iloc[i] < 0:
+            break
+    
+        if redispatch >= project_size:
+            break
+        
+        
+        pgen = df_FIC_sorted['Pgen or Pload'].iloc[i]
+        dfax = df_FIC_sorted[' Dfax'].iloc[i]
+    
+        if pgen==0:
+            continue
+            
+        df_FIC_sorted['Pgen or Pload'].values[i] = max(0, pgen - (project_size - redispatch))
+    
+        temp = pgen - df_FIC_sorted['Pgen or Pload'].iloc[i]
+        redispatch = redispatch + temp
+    
+        flow_change = flow_change - temp * dfax
+        
+        print(df_FIC_sorted['Bus Name    '].values[i]+" "+"reduced by "+str(temp))
+        
+        
+        
+        print("Redispatch = ",redispatch)
+        
+        
+    postproj_load = preproj_load + flow_change
+    
+    print("preproject load   = ",preproj_load)
+    print("preproject load % = ",preproj_loadp)
+    
+    postproj_loadp = postproj_load/(preproj_load/preproj_loadp)  
+    
+    
+    print(return_str[iteration-1])
+    print("Reference Load = " +str(preproj_load)+" ; Reference load % = "+ str(preproj_loadp))
+    print("Study Load = " +str(postproj_load)+" ; Study load % = "+ str(postproj_loadp))
+    
+    return preproj_load,preproj_loadp,postproj_load,postproj_loadp
