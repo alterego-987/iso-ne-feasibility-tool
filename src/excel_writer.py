@@ -1,4 +1,5 @@
 import shutil
+import os
 import openpyxl as yxl
 import re
 import numpy as np
@@ -8,7 +9,7 @@ from src.config import BOSTON_ZONES
 def writeExcel(file, inputParameters):
     busNo, projectSizeMain, response = inputParameters
     
-    outputFile = 'redispatch_' + file.split('/')[-1]
+    outputFile = 'redispatch_' + os.path.basename(file)
     
     try:
         shutil.copyfile(file, outputFile)
@@ -86,3 +87,5 @@ def writeExcel(file, inputParameters):
                 wb.save(outputFile)
                 wb.close()
                 break
+
+    return os.path.abspath(outputFile)
