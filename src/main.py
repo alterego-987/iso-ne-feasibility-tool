@@ -181,7 +181,7 @@ class AppScreen(QtWidgets.QMainWindow):
         }}
         QWidget {{
             color: {text_color};
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             font-size: 15px;
         }}
         QLabel#titleApp {{

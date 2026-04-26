@@ -55,8 +55,8 @@ def writeExcel(file, inputParameters):
 
                 redispatchFlows, dfDispatch = redispatch(flow_data, dispatch1, busNo, charging, switchN)
                 
-                redispatchFlows.replace(np.nan, '', inplace=True)
-                dfDispatch.replace(np.nan, '', inplace=True)
+                redispatchFlows.fillna('', inplace=True)
+                dfDispatch.fillna('', inplace=True)
 
                 loading = max(redispatchFlows.iloc[:, -1])
                 
