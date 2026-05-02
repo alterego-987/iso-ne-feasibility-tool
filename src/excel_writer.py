@@ -37,13 +37,13 @@ def writeExcel(file, inputParameters):
         for projectSize in optimizationRange:
             if loading > 1.02:
                 if response in 'Yy':
-                    charging = 'T'
+                    charging = 'Y'
                     projSize = 0 - projectSize
                 elif response in 'Nn':
-                    charging = 'F'
+                    charging = 'N'
                     projSize = projectSize
                 else:
-                    charging = 'F'
+                    charging = 'N'
                     projSize = projectSize
                     
                 dispatch11 = dispatch.sort_values(by=['Dfax_1'], ascending=False)

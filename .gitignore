@@ -7,6 +7,7 @@ __pycache__/
 
 # Client data - confidential
 *.xlsx
+!sample_data/Sample_N-1_Study.xlsx
 *Project Details.txt
 *POI Details.txt
 Acadia SWCT.txt
