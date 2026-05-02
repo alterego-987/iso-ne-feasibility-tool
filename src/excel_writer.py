@@ -9,7 +9,8 @@ from src.config import BOSTON_ZONES
 def writeExcel(file, inputParameters):
     busNo, projectSizeMain, response = inputParameters
     
-    outputFile = 'redispatch_' + os.path.basename(file)
+    output_dir = os.path.dirname(file)
+    outputFile = os.path.join(output_dir, 'redispatch_' + os.path.basename(file))
     
     try:
         shutil.copyfile(file, outputFile)
@@ -61,7 +62,7 @@ def writeExcel(file, inputParameters):
                 loading = max(redispatchFlows.iloc[:, -1])
                 
                 if loading > 1.02:
-                    outputFile_intermediate = f"redispatch_{sheetName}_{projSize}MW_{file.split('/')[-1]}"
+                    outputFile_intermediate = os.path.join(output_dir, f"redispatch_{sheetName}_{projSize}MW_{os.path.basename(file)}")
                     shutil.copyfile(file, outputFile_intermediate)
                     wb1 = yxl.load_workbook(outputFile_intermediate)
                     wsIndex = wb.sheetnames.index(sheetName)

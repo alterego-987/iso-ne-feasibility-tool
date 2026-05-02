@@ -83,14 +83,14 @@ def redispatch(flows, dispatch, busNo, charging, switchNo=0):
         
         droppingCapacity = 0
         
-        if charging == 'F':
+        if charging == 'N':
             if pDeltaSum <= 0:
                 break
             if pNew == 0:
                 continue
             droppingCapacity = pNew - pDeltaSum if pNew > pDeltaSum else 0
             
-        elif charging == 'T':
+        elif charging == 'Y':
             if pDeltaSum <= 0:
                 if pavail != 0:
                     if pmaxGen > pavail:
